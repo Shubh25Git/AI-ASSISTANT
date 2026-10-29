@@ -1,0 +1,42 @@
+# Give  AI Assistant a Personality | System Prompt
+
+from openai import OpenAI
+from dotenv import load_dotenv 
+import os 
+
+load_dotenv() 
+
+client = OpenAI(
+    base_url=os.getenv("BASE_URL"),
+    api_key=os.getenv("API_KEY")
+)
+
+messages=[]
+messages.append(
+    {
+        "role":"system",
+        "content":"Act as a friend and respond within 30 words "
+    }
+)
+while True:
+    user_input=input("ME:")
+    if user_input.lower() in ["exit","bye","quit","goodbye"]:
+        break
+    messages.append(
+        {
+        "role":"user",
+        "content":user_input
+        }
+    )
+    response=client.chat.completions.create(   
+        model=os.getenv("MODEL"),
+        messages=messages
+    )
+
+    messages.append(
+        {
+            "role":"assistant",
+            "content":response.choices[0].message.content
+        }
+    )
+    print("ASSISTENT:",response.choices[0].message.content)
